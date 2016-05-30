@@ -9,17 +9,19 @@ using System.Collections;
 
 public class MouseLookScript : MonoBehaviour {
 
-	public float sensitivityX = 10.0f;
-	public float sensitivityY = 10.0f;
+	[SerializeField]
+	private float sensitivityX = 10.0f;
+	[SerializeField]
+	private float sensitivityY = 10.0f;
 
-	public float minimumX = -360.0f;
-	public float maximumX = 360.0f;
+	private float minimumX = -360.0f;
+	private float maximumX = 360.0f;
 
 	// Min/max pitch (90 would be straight up and down)
-	public float minimumY = -60.0f;
-	public float maximumY = 60.0f;
+	private float minimumY = -60.0f;
+	private float maximumY = 60.0f;
 	
-	float rotationY = 0.0f;
+	private float rotationY = 0.0f;
 
 	// If set to false, mouse look will be disabled
 	[SerializeField]
@@ -62,6 +64,15 @@ public class MouseLookScript : MonoBehaviour {
 		return canLook;
 	}
 
+	public void setMouseSensitivity(float xSensitivity, float ySensitivity){
+		sensitivityX = xSensitivity;
+		sensitivityY = ySensitivity;
+	}
+
+	// Returns Vector2 with x and y sensitivity as the X/Y values of the Vector
+	public Vector2 getMouseSensitivity(){
+		return new Vector2(sensitivityX, sensitivityY);
+	}
 	
 
 
