@@ -1,7 +1,7 @@
 //
 // Minimal FPS Player Controller for Unity 4.6.3 and above
 // A minimum baseline set of FPS functionality for Unity 4.6.3+
-// Copyright 2016 While Fun Games
+// Made by 2016 While Fun Games
 // http://whilefun.com
 //
 
