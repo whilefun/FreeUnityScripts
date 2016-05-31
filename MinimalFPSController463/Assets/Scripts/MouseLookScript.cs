@@ -14,8 +14,8 @@ public class MouseLookScript : MonoBehaviour {
 	[SerializeField]
 	private float sensitivityY = 10.0f;
 
-	private float minimumX = -360.0f;
-	private float maximumX = 360.0f;
+	//private float minimumX = -360.0f;
+	//private float maximumX = 360.0f;
 
 	// Min/max pitch (90 would be straight up and down)
 	private float minimumY = -60.0f;
