@@ -51,11 +51,13 @@ public class FPSInputControllerScript : MonoBehaviour {
 		myCharacteraMotor.setInputMoveDirection(transform.rotation * directionVector);
 		myCharacteraMotor.setJumpInput(Input.GetButton("Jump"));
 
-		if(Input.GetKeyDown(KeyCode.C)){
+		//if(Input.GetKeyDown(KeyCode.C) || Input.GetButtonDown("Crouch")){
+		if(Input.GetButtonDown("Crouch")){
 			myCharacteraMotor.toggleCrouch();
 		}
 
-		myCharacteraMotor.setRunning(Input.GetKey(KeyCode.LeftShift));
+		//myCharacteraMotor.setRunning(Input.GetKey(KeyCode.LeftShift));
+		myCharacteraMotor.setRunning(Input.GetButton("Run"));
 
 	}
 

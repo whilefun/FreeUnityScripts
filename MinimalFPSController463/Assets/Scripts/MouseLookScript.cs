@@ -9,6 +9,11 @@ using System.Collections;
 
 public class MouseLookScript : MonoBehaviour {
 
+	[Tooltip("Set this to False to use gamepad analog stick for mouselook instead of the mouse")]
+	public bool useMouseForLook = true;
+	[Tooltip("Set this to True to flip gamepad Y Axis")]
+	public bool flipGamepadYAxis = true;
+
 	[SerializeField]
 	private float sensitivityX = 10.0f;
 	[SerializeField]
@@ -40,13 +45,31 @@ public class MouseLookScript : MonoBehaviour {
 
 		if(canLook){
 
-			// Rotate player transform horizontally
-			transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityX, 0);
+			if(useMouseForLook){
 
-			// And pitch the camera within the bounds specified
-			rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
-			rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
-			Camera.main.transform.localEulerAngles = new Vector3(-rotationY, Camera.main.transform.localEulerAngles.y, 0);
+				// Rotate player transform horizontally
+				transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivityX, 0);
+				
+				// And pitch the camera within the bounds specified
+				rotationY += Input.GetAxis("Mouse Y") * sensitivityY;
+				rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
+				Camera.main.transform.localEulerAngles = new Vector3(-rotationY, Camera.main.transform.localEulerAngles.y, 0);
+
+			}else{
+
+				// Use gamepad instead
+				transform.Rotate(0, Input.GetAxis("Gamepad Look X") * sensitivityX, 0);
+
+				if(flipGamepadYAxis){
+					rotationY -= Input.GetAxis("Gamepad Look Y") * sensitivityY;
+				}else{
+					rotationY += Input.GetAxis("Gamepad Look Y") * sensitivityY;
+				}
+
+				rotationY = Mathf.Clamp (rotationY, minimumY, maximumY);
+				Camera.main.transform.localEulerAngles = new Vector3(-rotationY, Camera.main.transform.localEulerAngles.y, 0);
+
+			}
 
 		}
 	
