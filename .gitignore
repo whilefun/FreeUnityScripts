@@ -23,6 +23,7 @@ ExportedObj/
 */*_[Dd]ata/
 *.exe
 *.zip
+*.unitypackage
 
 # Unity3D generated meta files
 *.pidb.meta
