@@ -10,6 +10,8 @@ Description:
 -----------
 A splash screen for Wizard Jam 8. Requires Unity 5.5.4p3 or higher.
 
+Intro sound effect by @dibs
+
 
 How to Use:
 ----------
