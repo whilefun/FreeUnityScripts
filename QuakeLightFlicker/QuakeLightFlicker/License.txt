@@ -1,0 +1,7 @@
+Portions of light pattern definitions transposed from Quake source code, here: https://github.com/id-Software/Quake/blob/master/QW/progs/world.qc#L303
+
+Copy of Quake source code license available in gnu.txt
+
+Original C# Flicker.cs code by Lotte, available here: https://gist.github.com/LotteMakesStuff/9612c5201d0308f86552f0600ac74802
+
+Flicker.cs has been modidied by Richard
