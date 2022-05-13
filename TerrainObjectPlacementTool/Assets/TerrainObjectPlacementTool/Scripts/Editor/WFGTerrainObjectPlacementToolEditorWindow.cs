@@ -14,7 +14,15 @@ namespace Whilefun.Tools
         private bool haveError = false;
         private string errorString = "";
 
-        public Terrain targetTerrain;
+        private int currentNumberOfTerrainObjects = 0;
+        private bool terrainObjectsDirty = false;
+
+        private const string refreshPlacementOnTerrainButtonText = "Refresh Terrain Placements";
+        private const string forceFindTerrainButtonText = "Force Objects to Find Terrains";
+
+        // TODO:
+        //private bool drawErrorGizmos = true;
+        //private bool drawNearestTerrainGizmo = false;
 
         [MenuItem("While Fun Games/Terrain Object Placement Tool")]
         static void Init()
@@ -30,18 +38,15 @@ namespace Whilefun.Tools
         {
 
             GUILayout.BeginVertical();
-
-            GUILayout.Label("Selected Terrain");
-            targetTerrain = (Terrain)EditorGUILayout.ObjectField(targetTerrain, typeof(Terrain), true);
-
-            if (GUILayout.Button("Auto Find Terrain"))
+                       
+            if (GUILayout.Button(refreshPlacementOnTerrainButtonText))
             {
-                FindTerrain();
+                refreshTerrainPlacement();
             }
-           
-            if (GUILayout.Button("Refresh Placement on Terrain"))
+
+            if (GUILayout.Button(forceFindTerrainButtonText))
             {
-                RefreshTerrainPlacement();
+                forceObjectsToFindTerrain();
             }
 
             // Uncomment these if you want to test things out!
@@ -56,65 +61,83 @@ namespace Whilefun.Tools
             //    DeleteTestObjects();
             //}
 
-
             if (haveError)
             {
                 GUILayout.Label(errorString);
             }
+
+            if (terrainObjectsDirty)
+            {
+                GUILayout.Label("Stale Terrain Object Data! Click '"+ forceFindTerrainButtonText + "'");
+            }
+            
 
             GUILayout.EndVertical();
 
         }
 
 
-        /// <summary>
-        /// Lazily finds first Terrain in the scene
-        /// </summary>
-        private void FindTerrain()
-        {
-
-            clearError();
-
-            targetTerrain = GameObject.FindObjectOfType<Terrain>();
-
-            if (targetTerrain == null)
-            {
-                setError("No Terrain found! Was is disabled in the scene?");
-            }
-
-        }
+       
 
         /// <summary>
         /// Finds all the WFGTerrainOPbject objects and sets them on top of the terrain
         /// </summary>
-        private void RefreshTerrainPlacement()
+        private void refreshTerrainPlacement()
         {
 
-            if (targetTerrain != null)
+            clearError();
+            WFGTerrainObject[] allTestObjects = GameObject.FindObjectsOfType<WFGTerrainObject>();
+
+            if(allTestObjects.Length == 0)
+            {
+                setError("No WFGTerrainObjects were found!");
+            }
+
+            for (int i = 0; i < allTestObjects.Length; i++)
+            {
+                allTestObjects[i].SnapToTerrain();
+            }
+
+        }
+
+
+        private void forceObjectsToFindTerrain()
+        {
+
+            clearError();
+            WFGTerrainObject[] allTestObjects = GameObject.FindObjectsOfType<WFGTerrainObject>();
+
+            if (allTestObjects.Length == 0)
+            {
+                setError("No WFGTerrainObjects were found!");
+            }
+
+            for (int i = 0; i < allTestObjects.Length; i++)
+            {
+                allTestObjects[i].ForceLocateTerrain();
+            }
+
+            terrainObjectsDirty = false;
+
+
+        }
+
+
+        private void OnHierarchyChange()
+        {
+
+            WFGTerrainObject[] allTestObjects = GameObject.FindObjectsOfType<WFGTerrainObject>();
+
+            // If a terrain object was added or removed from the scene, and we have terrain objects, give user a hint that they should refresh!
+            if(allTestObjects.Length > 0 && allTestObjects.Length != currentNumberOfTerrainObjects)
             {
 
-                clearError();
-                WFGTerrainObject[] allTestObjects = GameObject.FindObjectsOfType<WFGTerrainObject>();
-
-                if(allTestObjects.Length == 0)
-                {
-                    setError("No WFGTerrainObjects were found!");
-                }
-
-                for (int i = 0; i < allTestObjects.Length; i++)
-                {
-
-                    Vector3 refreshedPosition = allTestObjects[i].transform.position;
-                    refreshedPosition.y = targetTerrain.SampleHeight(refreshedPosition);
-                    allTestObjects[i].transform.position = refreshedPosition + new Vector3(0.0f, allTestObjects[i].VerticalOffset, 0.0f);
-
-                }
+                terrainObjectsDirty = true;
+                currentNumberOfTerrainObjects = allTestObjects.Length;
 
             }
-            else
-            {
-                setError("No Terrain object set!");
-            }
+
+            Repaint();
 
         }
 
@@ -127,8 +150,12 @@ namespace Whilefun.Tools
         private void PlaceTestObjects()
         {
 
-            Vector3 objectPlacementOrigin = new Vector3(-500.0f, 0.0f, -500.0f);
-            float objectSpacing = 25.0f;
+            // Assumes test scene has 9 terrains in a 3x3 grid, origin at (0,0,0)
+            // "Bottom left" of the terrain grid is (-150,0,-150)
+            int totalTerrainGridWidth = 300;
+            Vector3 objectPlacementOrigin = new Vector3(-150.0f, 0.0f, -150.0f);
+            int objectGridSize = 50;
+            float objectSpacing = (totalTerrainGridWidth / objectGridSize);
 
             GameObject testObjectContainer = GameObject.Find("TestObjectContainer");
 
@@ -139,16 +166,17 @@ namespace Whilefun.Tools
 
             GameObject testObjectPrefab = Resources.Load("Prefabs/MyTestTerrainObject") as GameObject;
 
-            for (int i = 0; i < 25; i++)
+            for (int i = 0; i < objectGridSize; i++)
             {
 
-                for (int j = 0; j < 25; j++)
+                for (int j = 0; j < objectGridSize; j++)
                 {
 
                     GameObject testObjectInstance = PrefabUtility.InstantiatePrefab(testObjectPrefab) as GameObject;
                     testObjectInstance.transform.position = objectPlacementOrigin + new Vector3(i * objectSpacing, 0.0f, j * objectSpacing);
-
                     testObjectInstance.transform.parent = testObjectContainer.transform;
+                    // Note: When creating test objects, automatically force locate terrains
+                    testObjectInstance.gameObject.GetComponent<WFGTerrainObject>().ForceLocateTerrain();
 
                 }
 
