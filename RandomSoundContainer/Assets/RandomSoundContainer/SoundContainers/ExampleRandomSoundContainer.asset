@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f552918f251b49549acef19659fe0508, type: 3}
+  m_Name: ExampleRandomSoundContainer
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 7b3409fa48784cc44ae2fa818215bea0, type: 3}
+  - {fileID: 8300000, guid: 9a064b611fa1fbb4c81fa4ceee92f8b8, type: 3}
+  - {fileID: 8300000, guid: 82ca34ae8c1f6a640abef475b397cb63, type: 3}
+  volume:
+    minValue: 0.9
+    maxValue: 1
+  pitch:
+    minValue: 0.9
+    maxValue: 1.1
