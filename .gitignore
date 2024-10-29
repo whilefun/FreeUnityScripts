@@ -36,3 +36,10 @@ sysinfo.txt
 #LightMaps
 *.exr*
 LightingData.asset
+
+
+# Custom Stuff
+*/[Ll]ogs/
+*.vsconfig
+*/UserSettings/EditorUserSettings.asset*
+*/UserSettings/Layouts/*
