@@ -43,3 +43,4 @@ LightingData.asset
 *.vsconfig
 */UserSettings/EditorUserSettings.asset*
 */UserSettings/Layouts/*
+*/UserSettings/*
