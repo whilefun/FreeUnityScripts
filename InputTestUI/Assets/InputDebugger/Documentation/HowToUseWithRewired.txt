@@ -1,0 +1,5 @@
+Included with this example project is a loose implementation of the InputManager that uses Rewired instead of UnityEngine.InputSystem.
+
+Note that I cannot provide support for this, and it requires a working knowledge and legal copy of the Rewired asset, available here https://assetstore.unity.com/packages/tools/utilities/rewired-21676 and here https://guavaman.com/projects/rewired/
+
+See InputManagerWithRewired.txt for implemetation details.

@@ -1,0 +1,172 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+using Rewired;
+
+public class InputManager : MonoBehaviour
+{
+
+    private static InputManager _instance = null;
+    public static InputManager Instance { get { return _instance; } }
+
+    private bool _initialized = false;
+
+    // The Rewired player id of this character
+    public int playerId = 0;
+
+    // The Rewired last controller used
+    //Controller controller = player.controllers.GetLastActiveController();
+
+	// The Rewired Player
+    private Player player;
+
+    // Note: These values need to match ActionID from Rewired Editor
+    public enum eInputs
+    {
+
+        MOVE_X = 0,
+        MOVE_Z = 2,
+        PAUSE = 3,
+        LOOK_HORIZONTAL = 4,
+        LOOK_VERTICAL = 5,
+        FIRE_PRIMARY = 6,
+        FIRE_SECONDARY = 7,
+
+    }
+
+    // Based on Rewired.ControllerType
+    /*
+    public enum eControllerType
+    {
+
+        NULL = -1,
+        KEYBOARD = 0,
+        MOUSE = 1,
+        JOYSTICK = 2,
+        CUSTOM = 20,
+
+    }
+    */
+
+    void Awake()
+    {
+
+        // If instance already exists, it means there is another one of this class somewhere in the scene. Destroy this one so we will still only have a single instance.
+        if (_instance != null)
+        {
+
+            Debug.LogWarning("InputManager:: Duplicate InputManager '" + this.gameObject.name + "', deleting duplicate instance.");
+            Destroy(this.gameObject);
+
+        }
+        else
+        {
+
+            // If this was the first instance of the class, save the reference to the instance variable, and optionally move to DontDestroyOnLoad
+            _instance = this;
+            DontDestroyOnLoad(this.gameObject);
+
+            // And if there's lots of stuff to initialize, optionally do that in another function
+            if (!_initialized)
+            {
+
+                _initialized = true;
+                initialize();
+
+            }
+
+        }
+
+    }
+
+    private void initialize()
+    {
+
+        // Get the Rewired Player object for this player and keep it for the duration of the character's lifetime
+        player = ReInput.players.GetPlayer(playerId);
+
+    }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        SetCursorState(cursorLocked);
+    }
+
+    private void SetCursorState(bool newState)
+    {
+        Cursor.lockState = newState ? CursorLockMode.Locked : CursorLockMode.None;
+    }
+
+    public bool GetButtonUp(eInputs inputActionID)
+    {
+        return player.GetButtonUp((int)inputActionID);
+    }
+
+    public bool GetButtonDown(eInputs inputActionID)
+    {
+        return player.GetButtonDown((int)inputActionID);
+    }
+
+    public bool GetButton(eInputs inputActionID)
+    {
+        return player.GetButton((int)inputActionID);
+    }
+
+    public float GetAxisRaw(eInputs inputActionID)
+    {
+        return player.GetAxisRaw((int)inputActionID);
+    }
+
+    public float GetAxis(eInputs inputActionID)
+    {
+        return player.GetAxis((int)inputActionID);
+    }
+
+    public float GetAxisRelative(eInputs inputActionID, float absoluteToRelMult)
+    {
+
+        float value = player.GetAxis((int)inputActionID);
+
+        if (player.GetAxisCoordinateMode((int)inputActionID) == Rewired.AxisCoordinateMode.Absolute)
+        {
+            value *= Time.unscaledDeltaTime * absoluteToRelMult;
+        }
+
+        return value;
+
+    }
+
+    /*
+    public Rewired.ControllerType GetLastActiveControllerType()
+    {
+
+        Controller controller = player.controllers.GetLastActiveController();
+
+        //if (controller != null)
+        //{
+
+        //switch (controller.type)
+        //{
+        //    case ControllerType.Keyboard:
+        //        // Do something for keyboard
+        //        break;
+        //    case ControllerType.Joystick:
+        //        // Do something for joystick
+        //        break;
+        //    case ControllerType.Mouse:
+        //        // Do something for mouse
+        //        break;
+        //    case ControllerType.Custom:
+        //        // Do something custom controller
+        //        break;
+        //}
+
+        //}
+
+        return controller.type;
+
+    }
+    */
+
+}
